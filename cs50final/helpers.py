@@ -1,7 +1,8 @@
+import argparse
 import os
 import warnings
+
 import quandl
-import argparse
 
 
 def validate_args(args):
@@ -72,7 +73,7 @@ def check_time(value):
         raise argparse.ArgumentTypeError("%s time out of boundary" % value)
     return ivalue
 
-# print args to screen
+
 def print_args(args):
     print(args)
     return None
