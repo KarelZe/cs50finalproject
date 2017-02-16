@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
+from datetime import timedelta, date
 
 import quandl
-from flask import jsonify
 
 from cs50final import helpers
 
@@ -30,11 +31,10 @@ def main():
 
     # validate arguments
     args = helpers.validate_args(args)
-
-    # calculation
-    # todo: implementation of download, montecarlo and jasonify
-    # print input to screen
+    # validate args
     helpers.print_args(args)
+    # generate json
+    var_to_json(100.0, 500.0, 20)
 
 
 def download_data(to_download):
@@ -54,7 +54,6 @@ def calculate_historical_var(stock_data, percentage, time):
     :param time: time in days
     :return: future_value
     """
-    print(stock_data, percentage, time)
     return 0
 
 
@@ -67,8 +66,19 @@ def var_to_json(initial_value, future_value, time):
     :param time:
     :return:
     """
-    print(initial_value, future_value, time)
-    return jsonify("data")
+
+    data = [('year', 'future_value')]
+    for i in range(time):
+        portfolio_at_i = str(initial_value + (future_value - initial_value) / time * (i + 1))
+        item = (str(date.today() + timedelta(days=i)), portfolio_at_i)
+        data.append(item)
+    var_json = json.JSONEncoder().encode(data)
+    """
+    target = open('var_to_json.json', 'w')
+    target.write(var_json)
+    target.close()
+    """
+    return var_json
 
 
 if __name__ == "__main__":

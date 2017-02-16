@@ -2,3 +2,5 @@ flask
 pandas
 numpy
 quandl
+Flask
+Flask-JSGlue
