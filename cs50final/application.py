@@ -1,15 +1,30 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
 from datetime import timedelta, date
 
 import quandl
+from flask import Flask, jsonify
+from flask_jsglue import JSGlue
 
 from cs50final import helpers
 
+# configure application
+app = Flask(__name__)
+JSGlue(app)
+
+# ensure responses aren't cached
+if app.config["DEBUG"]:
+    @app.after_request
+    def after_request(response):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Expires"] = 0
+        response.headers["Pragma"] = "no-cache"
+        return response
+
 
 def main():
+    # todo: remove argparse from main
     parser = argparse.ArgumentParser(
         description=(
             'Calculates a future value of a stock portfolio from given stock symbols'
@@ -34,7 +49,7 @@ def main():
     # validate args
     helpers.print_args(args)
     # generate json
-    var_to_json(100.0, 500.0, 20)
+    update()
 
 
 def download_data(to_download):
@@ -72,13 +87,12 @@ def var_to_json(initial_value, future_value, time):
         portfolio_at_i = str(initial_value + (future_value - initial_value) / time * (i + 1))
         item = (str(date.today() + timedelta(days=i)), portfolio_at_i)
         data.append(item)
-    var_json = json.JSONEncoder().encode(data)
-    """
-    target = open('var_to_json.json', 'w')
-    target.write(var_json)
-    target.close()
-    """
-    return var_json
+    return jsonify(dict(data))
+
+
+@app.route("/update")
+def update():
+    return var_to_json(100.0, 500.0, 20)
 
 
 if __name__ == "__main__":
