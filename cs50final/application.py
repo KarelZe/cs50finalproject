@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-import argparse
 from datetime import timedelta, date
 
-import quandl
-from flask import Flask, jsonify
+from flask import Flask, redirect, render_template, request, url_for, jsonify
 from flask_jsglue import JSGlue
 
 from cs50final import helpers
@@ -23,41 +21,13 @@ if app.config["DEBUG"]:
         return response
 
 
-def main():
-    # todo: remove argparse from main
-    parser = argparse.ArgumentParser(
-        description=(
-            'Calculates a future value of a stock portfolio from given stock symbols'
-        )
-    )
-    # symbol is positional, one or more symbols are saved to a list
-    parser.add_argument('-s', '--symbol', nargs='*', type=str, default=[],
-                        help="valid ticker symbol")
-    # percentage of share in portfolio
-    parser.add_argument('-p', '--percentage', nargs='*', type=float, default=[],
-                        help="percentage level between 0.01 and 1")
-
-    parser.add_argument('-c', '--confidence', nargs='?', type=helpers.check_confidence, default=0.5,
-                        help="confidence level between 0.1 and 1")
-    parser.add_argument('-t', '--time', nargs='?', type=helpers.check_time, default=250)
-    parser.add_argument('-i', '--initial', nargs='?', type=float, default=100000.0)
-
-    args = parser.parse_args()
-
-    # validate arguments
-    args = helpers.validate_args(args)
-    # validate args
-    helpers.print_args(args)
-    # generate json
-    update()
-
-
 def download_data(to_download):
-    try:
+    """try:
         data = quandl.get(to_download.symbol)
         return data
     except:
-        return None
+        return None"""
+    return None
 
 
 def calculate_historical_var(stock_data, percentage, time):
@@ -90,10 +60,26 @@ def var_to_json(initial_value, future_value, time):
     return jsonify(dict(data))
 
 
-@app.route("/update")
-def update():
-    return var_to_json(100.0, 500.0, 20)
+@app.route('/')
+def index():
+    # This function forwards to /search
+    return redirect(url_for('search'))
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    """This function function takes the input from the form, converts it to a dict and renders it as json"""
+    if request.method == 'POST':
+        """ convert from werkzeug multidict to dict nest everything in lists for easier parsing.
+        Every element will be nested in a single list by default. """
+
+        form = request.form.to_dict(flat=False)
+        helpers.validate_form(form)
+
+        return jsonify(form)
+    else:
+        return render_template('search.html')
 
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)

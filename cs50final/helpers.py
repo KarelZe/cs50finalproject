@@ -1,45 +1,51 @@
-import argparse
 import os
 import warnings
 
 import quandl
 
 
-def validate_args(args):
-    args = validate_percentage(args)
-    args = validate_symbol(args)
-    return args
+def validate_form(form):
+    form['percentage'] = [float(i) for i in form['percentage']]
 
+    time = float(form['time'][0])
 
-def validate_percentage(args):
-    # todo: rewrite code flat is better than nested
-
-    len_percentage = len(args.percentage)
-    len_symbol = len(args.symbol)
-
-    if len(args.symbol) != 0 and len_symbol == len_percentage:
-
-        # check if all given numbers are greater than 0
-        valid_percentage = True
-        for i in range(len_symbol):
-            if args.percentage[i] < 0:
-                valid_percentage = False
-                break
-
-        # check if total sum is equal to 1, if not weight portfolio equally
-        if not (valid_percentage is True and sum(args.percentage) == 1.0):
-            # warnings.warn('portfolio weighted equally due to invalid or missing options (-p)')
-            args.percentage = [1] * len_symbol
-            args.percentage[:] = [x / len_symbol for x in args.percentage]
+    if time <= 1 or time > 99999:
+        form['time'] = 250
+        warnings.warn("time out of boundary")
     else:
-        # given input is incorrect, initialize list with length of ticker list and weight equally
-        # warnings.warn('portfolio weighted equally due to invalid or missing options (-p)')
-        args.percentage = [1] * len_symbol
-        args.percentage[:] = [x / len_symbol for x in args.percentage]
-    return args
+        form['time'] = time
+
+    confidence = float(form['confidence'][0])
+    if confidence <= 0.001 or confidence > 1:
+        form['confidence'] = 0.5
+        warnings.warn("confidence level out of boundary")
+    else:
+        form['confidence'] = confidence
+
+    form = validate_symbol(form)
+    form = validate_percentage(form)
+    return form
 
 
-def validate_symbol(args):
+def validate_percentage(form):
+    len_percentage = len(form['percentage'])
+    len_symbol = len(form['symbol'])
+
+    # check if all given numbers are greater than 0
+    valid_percentage = True
+    for i in range(len_symbol):
+        if form['percentage'][i] < 0:
+            valid_percentage = False
+            break
+
+    # given input is incorrect, initialize list with length of ticker list and weight equally
+    if not (valid_percentage is True and sum(form['percentage']) == 1.0) and len_symbol == len_percentage:
+        form['percentage'] = [1] * len_symbol
+        form['percentage'][:] = [1.0 / len_symbol for x in range(len_percentage)]
+    return form
+
+
+def validate_symbol(form):
     # todo try alternative approach https://github.com/quandl/quandl-python/blob/master/FOR_DEVELOPERS.md
     try:
         quandl.ApiConfig.api_key = os.environ.get("API_KEY")
@@ -49,31 +55,12 @@ def validate_symbol(args):
     validated_symbol = []
     # loop through given symbols return validated list of symbols
     # todo improve performance of query
-    for i in range(len(args.symbol)):
+    for i in range(len(form['symbol'])):
         try:
-            data = quandl.get("WIKI/" + args.symbol[i], rows=1)
+            data = quandl.get("WIKI/" + form['symbol'][i], rows=1)
             if data is not None:
-                validated_symbol.append(args.symbol[i])
+                validated_symbol.append(form['symbol'][i])
         except:
             warnings.warn('error during validation')
-    args.symbol = validated_symbol
-    return args
-
-
-def check_confidence(value):
-    fvalue = float(value)
-    if fvalue <= 0.001 or fvalue > 1:
-        raise argparse.ArgumentTypeError("%s confidence level out of boundary" % value)
-    return fvalue
-
-
-def check_time(value):
-    ivalue = int(value)
-    if ivalue <= 1 or ivalue > 99999:
-        raise argparse.ArgumentTypeError("%s time out of boundary" % value)
-    return ivalue
-
-
-def print_args(args):
-    print(args)
-    return None
+    form['symbol'] = validated_symbol
+    return form

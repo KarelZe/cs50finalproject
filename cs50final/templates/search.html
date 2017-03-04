@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}
+Search
+{% endblock %}
+{% block main %}
+<form action="{{ url_for('search') }}"  method="post">
+   <fieldset>
+      <div class="mdl-grid">
+         <div class="mdl-cell mdl-cell--12-col">
+            The 100k calculator is a niffty tool, that helps you estimate your future portfolio value based on historical
+            values. Just input ticker symbols, confidence and your horzion and we'll do the heavy lifting for you.
+            A wait there's more... You will be returned a correlated portfolio value based on 10 years of stockmarket data.
+            For beauty reasons the chart uses linear interpolation. Past returns do not guarantee future performance. Amen.
+         </div>
+      </div>
+      <div class ="mdl-grid" id="form_group" >
+         <div class="mdl-cell mdl-cell--6-col">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+               <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" name="confidence" id="confidence">
+               <label class="mdl-textfield__label" for="confidence">confidence...</label>
+               <span class="mdl-textfield__error">Number required!</span>
+            </div>
+         </div>
+         <div class="mdl-cell mdl-cell--5-col">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+               <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" name="time" id="time">
+               <label class="mdl-textfield__label" for="time">time...</label>
+               <span class="mdl-textfield__error">Number required!</span>
+            </div>
+         </div>
+         <div class="mdl-cell mdl-cell--6-col">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+               <input class="mdl-textfield__input" type="text" name="symbol" id="symbol">
+               <label class="mdl-textfield__label" for="symbol">ticker...</label>
+            </div>
+         </div>
+         <div class="mdl-cell mdl-cell--5-col">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+               <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" name="percentage" id="percentage">
+               <label class="mdl-textfield__label" for="percentage">percentage...</label>
+                <span class="mdl-textfield__error">Number required!</span>
+            </div>
+         </div>
+         <div class="mdl-cell mdl-cell--1-col">
+            <button class="mdl-button mdl-js-button mdl-button--mini-fab" onclick="add_fields();" type="button"> 
+                <i class="material-icons">add</i>
+            </button>
+         </div>
+      </div>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-cell--12-col" type="submit">calculate</button> 
+      <div class="mdl-cell mdl-cell--12-col">
+         <h2>100k in 3 years</h2>
+      </div>
+      <div id = "chart_div" class = "mdl-cell mdl-cell--12-col"></div>
+   </fieldset>
+</form>
+{% endblock %}
