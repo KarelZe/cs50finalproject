@@ -3,12 +3,15 @@ intro
 The 100k calculator is a nifty tool, that helps you estimate your future portfolio value based on historical values.
 Just input ticker symbols, confidence and your horizon and we'll do the heavy lifting for you. A wait there's more...
 You will be returned a correlated portfolio value based on 10 years of stock market data. For beauty reasons the chart
- uses linear interpolation. Past returns do not guarantee future performance. Amen.
+uses linear interpolation. Past returns do not guarantee future performance. Amen.
 .. image:: https://github.com/KarelZe/cs50finalproject/raw/master/docs/image/input_field.jpg
 installation
 ============
+
 Linux
 -----
+
+Open up your terminal and you are almost done...
 .. code-block:: bash
     # Debian, Ubuntu, etc.
     wget https://github.com/KarelZe/cs50finalproject/archive/master.zip
