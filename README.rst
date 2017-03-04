@@ -15,6 +15,7 @@ Linux
 -----
 
 Open up your shell and you are almost done...
+
 .. code-block:: bash
     # Debian, Ubuntu, etc.
     wget https://github.com/KarelZe/cs50finalproject/archive/master.zip
