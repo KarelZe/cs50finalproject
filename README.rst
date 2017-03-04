@@ -17,12 +17,13 @@ Linux
 Open up your shell and you are almost done...
 
 .. code-block:: bash
+
     # Debian, Ubuntu, etc.
-    wget https://github.com/KarelZe/cs50finalproject/archive/master.zip
-    unzip master.zip
-    mv cs50finalproject-master cs50final
-    cd cs50final
-    make
+    $ wget https://github.com/KarelZe/cs50finalproject/archive/master.zip
+    $ unzip master.zip
+    $ mv cs50finalproject-master cs50final
+    $ cd cs50final
+    $ make
 
 get in contact
 ==============
