@@ -11,6 +11,7 @@ function add_fields() {
     
     var input_symbol = document.createElement("input");
     input_symbol.setAttribute("name", "symbol");
+    input_symbol.setAttribute("id", "symbol");
     input_symbol.setAttribute("type", "text");
     input_symbol.setAttribute("class", "mdl-textfield__input");
     
@@ -37,9 +38,10 @@ function add_fields() {
     
     var input_percentage = document.createElement("input");
     input_percentage.setAttribute("name", "percentage");
+    input_percentage.setAttribute("id", "percentage");
     input_percentage.setAttribute("type", "text");
     input_percentage.setAttribute("class", "mdl-textfield__input");
-    input_percentage.setAttribute("pattern", "-?[0-9]*([0-9]+)?");
+    input_percentage.setAttribute("pattern", "-?[0-9]*(\.[0-9]+)?");
     
     var label_percentage = document.createElement("label");
     label_percentage.setAttribute("class","mdl-textfield__label");
