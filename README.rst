@@ -27,4 +27,5 @@ Open up your shell and you are almost done...
 
 get in contact
 ==============
-If you have any questions, contact me if you dare. Just fill in the contact form on http://markusbilz.com/wip/ or write my an email to mail æ markusbilz.com
+If you have any questions, contact me if you dare. Just fill in the contact form on http://markusbilz.com/wip/
+or write my an email to mail æ markusbilz.com
