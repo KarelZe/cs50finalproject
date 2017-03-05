@@ -49,11 +49,13 @@ Search
          </div>
       </div>
       <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-cell--12-col"
-              onclick ="update()" type="submit">calculate</button>
-      <div class="mdl-cell mdl-cell--12-col">
-         <h2>100k in 3 years</h2>
-      </div>
-      <div id = "chart_div" class = "mdl-cell mdl-cell--12-col"></div>
+              onclick ="update();" type="submit">calculate</button>
    </fieldset>
 </form>
-{% endblock %}
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--12-col">
+      <h2>100k in 3 years</h2>
+   </div>
+   <div id = "chart_div" class = "mdl-cell mdl-cell--12-col"></div>
+</div>
+   {% endblock %}

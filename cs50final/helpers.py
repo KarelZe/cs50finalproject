@@ -1,4 +1,3 @@
-import os
 import warnings
 
 import quandl
@@ -47,19 +46,13 @@ def validate_percentage(form):
 
 def validate_symbol(form):
     # todo try alternative approach https://github.com/quandl/quandl-python/blob/master/FOR_DEVELOPERS.md
-    try:
-        quandl.ApiConfig.api_key = os.environ.get("API_KEY")
-    except KeyError:
-        raise RuntimeError("API_KEY not set")
-
     validated_symbol = []
     # loop through given symbols return validated list of symbols
-    # todo improve performance of query
     for i in range(len(form['symbol'])):
         try:
-            data = quandl.get("WIKI/" + form['symbol'][i], rows=1)
+            data = quandl.get("WIKI/" + form['symbol'][i], rows=1, column_index=0)
             if data is not None:
-                validated_symbol.append(form['symbol'][i])
+                validated_symbol.append("WIKI/" + form['symbol'][i])
         except:
             warnings.warn('error during validation')
     form['symbol'] = validated_symbol

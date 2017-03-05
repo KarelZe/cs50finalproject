@@ -24,6 +24,7 @@ Open up your shell and you are almost done...
     $ mv cs50finalproject-master cs50final
     $ cd cs50final
     $ make
+    $ API_KEY=(sign up to quandl for free)...
 
 get in contact
 ==============

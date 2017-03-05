@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import os
 from datetime import timedelta, date
 
+import quandl
 from flask import Flask, redirect, render_template, request, url_for, jsonify
 from flask_jsglue import JSGlue
 
@@ -10,6 +12,13 @@ from cs50final import helpers
 # configure application
 app = Flask(__name__)
 JSGlue(app)
+
+"""register for free on quandl.com to get an API_KEY. Set it as an environment variable"""
+try:
+    quandl.ApiConfig.api_key = os.environ.get("API_KEY")
+
+except KeyError:
+    raise RuntimeError("API_KEY not set")
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -22,12 +31,13 @@ if app.config["DEBUG"]:
 
 
 def download_data(to_download):
-    """try:
-        data = quandl.get(to_download.symbol)
+    try:
+        data = quandl.get(to_download, start_date="2014-01-01", end_date="2014-12-31", collapse="weekly",
+                          returns="pandas")
+        print(data)
         return data
     except:
-        return None"""
-    return None
+        return None
 
 
 def calculate_historical_var(stock_data, percentage, time):
@@ -75,8 +85,8 @@ def search():
 
         form = request.form.to_dict(flat=False)
         helpers.validate_form(form)
-        # run calculation 
-        return var_to_json(100000, 150000, 5)
+        download_data(form['symbol'])
+        return jsonify(form)
     else:
         return render_template('search.html')
 
