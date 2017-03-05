@@ -83,3 +83,14 @@ function add_fields() {
    function remove_fields(rid) {
 	  $(".removal_code"+rid).remove();
    }
+
+   function update(){
+   $.getJSON(Flask.url_for("search"), parameters)
+   .done(function(data, textStatus, jqXHR) {
+        console.log(data)
+   })
+   .fail(function(jqXHR, textStatus, errorThrown) {
+        // log error to browser's console
+        console.log(errorThrown.toString());
+   });
+   }

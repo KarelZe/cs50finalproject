@@ -52,12 +52,12 @@ def var_to_json(initial_value, future_value, time):
     :return:
     """
 
-    data = [('year', 'future_value')]
+    data = {'0_year': '0_future_value'}
     for i in range(time):
-        portfolio_at_i = str(initial_value + (future_value - initial_value) / time * (i + 1))
-        item = (str(date.today() + timedelta(days=i)), portfolio_at_i)
-        data.append(item)
-    return jsonify(dict(data))
+        value_at_i = str(initial_value + (future_value - initial_value) / time * (i + 1))
+        key_at_i = str(date.today() + timedelta(days=i))
+        data[key_at_i] = value_at_i
+    return jsonify(data)
 
 
 @app.route('/')
@@ -75,8 +75,8 @@ def search():
 
         form = request.form.to_dict(flat=False)
         helpers.validate_form(form)
-
-        return jsonify(form)
+        # run calculation 
+        return var_to_json(100000, 150000, 5)
     else:
         return render_template('search.html')
 

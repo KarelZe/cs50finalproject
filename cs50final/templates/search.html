@@ -36,7 +36,8 @@ Search
          </div>
          <div class="mdl-cell mdl-cell--5-col">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-               <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" name="percentage" id="percentage">
+               <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?"
+                      name="percentage" id="percentage">
                <label class="mdl-textfield__label" for="percentage">percentage...</label>
                 <span class="mdl-textfield__error">Number required!</span>
             </div>
@@ -47,7 +48,8 @@ Search
             </button>
          </div>
       </div>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-cell--12-col" type="submit">calculate</button> 
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-cell--12-col"
+              onclick ="update()" type="submit">calculate</button>
       <div class="mdl-cell mdl-cell--12-col">
          <h2>100k in 3 years</h2>
       </div>
