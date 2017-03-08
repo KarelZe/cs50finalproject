@@ -1,49 +1,4 @@
-var room = 1;
-var chart
-var options
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart(){
-        var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales'],
-          ['2013',  1000],
-          ['2014',  1170],
-          ['2015',  660],
-          ['2016',  1030]
-        ]);
-
-        options = {
-          animation:
-          {
-            duration: 1000,
-            easing : 'out',
-            startup: true,
-          },
-
-          hAxis: {
-
-            gridlines: {color: 'none'},
-            baselineColor: 'none',
-          },
-          vAxis: {
-            minValue: 0,
-            gridlines: {color: 'none'},
-            baselineColor: 'none',
-          },
-          legend: {position: 'none'},
-          areaOpacity: 0,
-          colors: ['#e91e63'],
-
-          chartArea: {
-            left:0,top:0,width:'100%',height:'100%',
-          },
-          theme: 'maximized'
-        }
-        chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-}
-
+var room;
 
 function add_fields() {
  
@@ -126,10 +81,6 @@ function add_fields() {
     document.getElementById("form_group").appendChild(div_button_cell);
 
 }
-   function remove_fields(rid) {
-	  $(".removal_code"+rid).remove();
-   }
-
-   function update(){
-    console.log('update goes here.')
-   }
+function remove_fields(rid) {
+    $(".removal_code"+rid).remove();
+}
