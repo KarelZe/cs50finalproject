@@ -3,9 +3,12 @@
 import os
 from datetime import timedelta, date
 
+import numpy as np
+import pandas as pd
 import quandl
 from flask import Flask, redirect, render_template, request, url_for, jsonify
 from flask_jsglue import JSGlue
+from scipy.special import ndtri
 
 from cs50final import helpers
 
@@ -30,26 +33,38 @@ if app.config["DEBUG"]:
         return response
 
 
-def download_data(to_download):
+def calculate_historical_var(to_download):
+    """ This is a very basic approach to calculate an "uncorrelated value at risk (time) expost" based on:
+    "III. Ermittlung des Value at Risk mit Simulationsverfahren, Historische Simulation, VWA
+    :param to_download: relevant calculation information including symbols, confidence, initial_capital etc.
+    :return on success: to_download with calculated future value, otherwise NULL
+    """
     try:
-        data = quandl.get(to_download, start_date="2014-01-01", end_date="2014-12-31", collapse="weekly",
-                          returns="pandas")
-        print(data)
-        return data
+        df = quandl.get(to_download['symbol'], start_date="2013-12-25", end_date="2014-12-31", collapse="weekly",
+                        transform="rdiff", returns="pandas")
+
+        # slice data frame to relevant close quotes
+        df_portfolio = df.ix[::, 10::12]
+
+        # Transform percent matrix for multiplication
+        df_multiplier = pd.DataFrame(to_download['percentage']).transpose()
+        df_multiplier = df_multiplier * to_download['initial_capital']
+
+        # multiply daily return in % with the total initial capital * percentage
+        df_product = pd.DataFrame(df_multiplier.values * df_portfolio.values, columns=df_portfolio.columns,
+                                  index=df_portfolio.index)
+
+        # sum up daily return, calculate standard deviation
+        df_product['sum_portfolio'] = df_product.sum(axis=1)
+        std = df_product["sum_portfolio"].std()
+
+        # value at risk scaled to horizon = value at risk * square root time
+        value_at_risk = ndtri(1 - to_download['confidence']) * std * np.sqrt(to_download['time'])
+        to_download['future_value'] = max(to_download['initial_capital'] + value_at_risk, 0)
+        print(to_download['future_value'])
+        return to_download
     except:
         return None
-
-
-def calculate_historical_var(stock_data, percentage, time):
-    """ This is a very basic approach to calculate an "uncorrelated value at risk (time) expost" based on:
-    "III. Ermittlung des Value at Risk mit Simulationsverfahren, Historische Simulation, VWA"
-    This is for testing purpose only.
-    :param stock_data: pandas.DataFrame for one or multiple stocks
-    :param percentage: between 0 and 1.
-    :param time: time in days
-    :return: future_value
-    """
-    return 0
 
 
 def var_to_json(initial_value, future_value, time):
@@ -84,9 +99,12 @@ def search():
         Every element will be nested in a single list by default. """
 
         form = request.form.to_dict(flat=False)
+
+        form['initial_capital'] = 100000
+
         helpers.validate_form(form)
-        download_data(form['symbol'])
-        return jsonify(form)
+
+        return jsonify(calculate_historical_var(form))
     else:
         return render_template('search.html')
 
