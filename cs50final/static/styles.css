@@ -1,3 +1,8 @@
+a {
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
+}
+
 .own-header{
 background-color: rgb(36, 41, 46);
 height: 64px;
@@ -27,6 +32,7 @@ color: #FFFFFF;
   max-width: 1600px;
   width: calc(100% - 16px);
   margin: 0 auto;
+  height: 90%;
 }
 
 .own-content {
@@ -43,6 +49,10 @@ color: #FFFFFF;
   margin-top: 48px;
 }
 
+.own-content p, li {
+  text-align: left;
+}
+
 .own-footer {
   padding-left: 40px;
 }
@@ -54,7 +64,6 @@ color: #FFFFFF;
 
 .own-content-error {
     text-align: center;
-
 .own-content-error h1 {
     font-size: 500%;
 }

@@ -9,19 +9,24 @@ def apology(top="", bottom=""):
 
 
 def validate_form(form):
+    # todo: error handling
     form['percentage'] = [float(i) for i in form['percentage']]
 
-    time = float(form['time'][0])
+    # convert to int
+    try:
+        time = int(form['time'][0])
+    except ValueError:
+        time = -1
 
     if time not in range(1, 9999):
-        form['time'] = 250
+        form['time'] = -1
         warnings.warn("time out of boundary")
     else:
         form['time'] = time
 
     confidence = float(form['confidence'][0])
-    if confidence <= 0.001 or confidence > 1:
-        form['confidence'] = 0.5
+    if 0 >= confidence > 1:
+        form['confidence'] = -1
         warnings.warn("confidence level out of boundary")
     else:
         form['confidence'] = confidence

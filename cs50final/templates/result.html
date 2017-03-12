@@ -1,9 +1,25 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Results
+Results
 {% endblock %}
 
 {% block main %}
-   <div id="chart_div" data-name="{{json_data}}"> </div>
+<h1>{{calc_data.initial_capital|round}} USD could be
+    worth {{calc_data.future_value|round}} USD
+    in {{calc_data.time}} days* </h1>
+<div id="chart_div" data-name="{{json_data}}">
+</div>
+<p>
+    <br/>
+    *Ah wait. Sometimes things get messed up. Only 'known' tickers will be processed; the percentage is then leveled
+    accordingly. You might want to check the calculation data...
+</p>
+<ul>
+    <li>processed symbols: {{calc_data.symbol}}</li>
+    <li>processed percentage: {{calc_data.percentage}}</li>
+    <li>processed confidence: {{calc_data.confidence}}</li>
+    <li>processed time: {{calc_data.time}}</li>
+</ul>
+
 {% endblock %}

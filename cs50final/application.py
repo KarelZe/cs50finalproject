@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import json
 import os
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
+from math import sqrt
 
-import numpy as np
 import pandas as pd
 import quandl
+from dateutil.relativedelta import relativedelta
 from flask import Flask, redirect, render_template, request, url_for
 from flask_jsglue import JSGlue
 from scipy.special import ndtri
@@ -15,8 +16,6 @@ from cs50final import helpers
 # configure application
 app = Flask(__name__)
 JSGlue(app)
-
-# TODO: handle errors like: helpers.apology("(≥o≤)", "done.")
 
 """register for free on quandl.com to get an API_KEY.
  Set it as an environment variable"""
@@ -39,7 +38,8 @@ if app.config["DEBUG"]:
 def calculate_historical_var(form):
     """ This is a very basic approach to calculate an "uncorrelated value
      at risk (time) expost" based on: "III. Ermittlung des Value at Risk
-      mit Simulationsverfahren, Historische Simulation, VWA
+      mit Simulationsverfahren, Historische Simulation, VWA. At Maximum
+      2 years of historical data is fetched.(Today-2y)
     :param form: relevant calculation information including symbols,
      confidence, initial_capital etc.
     :return on success: to_download with calculated future value,
@@ -47,8 +47,8 @@ def calculate_historical_var(form):
     form['initial_capital'] = 100000
 
     try:
-        df = quandl.get(form['symbol'], start_date="2013-12-25",
-                        end_date="2014-12-31", collapse="weekly",
+        df = quandl.get(form['symbol'], start_date=str(datetime.now() - relativedelta(years=2)),
+                        end_date=str(datetime.now), collapse="weekly",
                         transform="rdiff", returns="pandas")
 
         # slice data frame to relevant close quotes
@@ -68,7 +68,7 @@ def calculate_historical_var(form):
         std = df_product["sum_portfolio"].std()
 
         # value at risk scaled to horizon = value at risk * square root time
-        value_at_risk = ndtri(1 - form['confidence']) * std * np.sqrt(form['time'])
+        value_at_risk = ndtri(1 - form['confidence']) * std * sqrt(form['time'])
         form['future_value'] = max(form['initial_capital'] + value_at_risk, 0)
         return form
     except ValueError:
@@ -85,10 +85,10 @@ def var_to_json(initial_value, future_value, time):
     :return:
     """
 
-    factor = (future_value - initial_value) / np.sqrt(time)
+    factor = (future_value - initial_value) / sqrt(time)
     data = [[str(date.today() + timedelta(days=i)),
-             initial_value + factor * np.sqrt(i)]
-            for i in range(0, int(time))]
+             initial_value + factor * sqrt(i)]
+            for i in range(0, time)]
     return json.dumps(data)
 
 
@@ -109,15 +109,24 @@ def search():
 
         form = request.form.to_dict(flat=False)
         form = helpers.validate_form(form)
-        print(form['symbol'])
+
         if not form['symbol']:
-            return helpers.apology("(≥o≤)", "No valid symbols")
-        else: # Todo: send calculation data to html
+            return helpers.apology("(≥o≤)", "no valid symbols.")
+        elif form['time'] == -1:
+            return helpers.apology("\(o_o)/", "time horizon not valid.")
+        elif form['confidence'] == -1:
+            return helpers.apology("(˚Δ˚)b", "confidence not valid.")
+        elif form['confidence'] == 0.5:
+            return helpers.apology("\(^Д^)/", "shortcut. 100k.")
+
+        else:  # Todo: send calculation data to html
             form = calculate_historical_var(form)
-            json_data = var_to_json(form['initial_capital'], form['future_value'],form['time'])
-            return render_template('result.html', json_data=json_data)
+            json_data = var_to_json(form['initial_capital'], form['future_value'], form['time'])
+            return render_template('result.html', json_data=json_data, calc_data=form)
     else:
         return render_template('search.html')
+
+
 if __name__ == "__main__":
     # TODO: Disable for production use.
     app.run(debug=True)
