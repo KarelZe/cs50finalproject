@@ -62,7 +62,7 @@ def validate_symbol(form):
                               rows=1, column_index=0)
             if data is not None:
                 validated_symbol.append("WIKI/" + form['symbol'][i])
-        except ValueError:
+        except:
             warnings.warn('error during validation')
-    form['symbol'] = validated_symbol
-    return form
+        form['symbol'] = validated_symbol
+        return form

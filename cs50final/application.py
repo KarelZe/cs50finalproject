@@ -45,6 +45,7 @@ def calculate_historical_var(form):
     :return on success: to_download with calculated future value,
      otherwise NULL"""
     form['initial_capital'] = 100000
+
     try:
         df = quandl.get(form['symbol'], start_date="2013-12-25",
                         end_date="2014-12-31", collapse="weekly",
@@ -55,7 +56,7 @@ def calculate_historical_var(form):
 
         # Transform percent matrix for multiplication
         df_multiplier = pd.DataFrame(form['percentage']).transpose()
-        df_multiplier = df_multiplier * form['initial_capital']
+        df_multiplier *= form['initial_capital']
 
         # multiply daily return in % with the total initial capital * percentage
         df_product = pd.DataFrame(df_multiplier.values * df_portfolio.values,
@@ -108,16 +109,17 @@ def search():
 
         form = request.form.to_dict(flat=False)
         form = helpers.validate_form(form)
-        form = calculate_historical_var(form)
-        json_data = var_to_json(form['initial_capital'],
-                                form['future_value'],
-                                form['time'])
-        # Todo: send calculation data to html
-        return render_template('result.html', json_data=json_data)
+        print(form['symbol'])
+        if not form['symbol']:
+            return helpers.apology("(≥o≤)", "No valid symbols")
+        else: # Todo: send calculation data to html
+            form = calculate_historical_var(form)
+            json_data = var_to_json(form['initial_capital'],
+                                    form['future_value'],
+                                    form['time'])
+            return render_template('result.html', json_data=json_data)
     else:
         return render_template('search.html')
-
-
 if __name__ == "__main__":
     # TODO: Disable for production use.
     app.run(debug=True)
