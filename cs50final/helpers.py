@@ -13,7 +13,7 @@ def validate_form(form):
 
     time = float(form['time'][0])
 
-    if time <= 1 or time > 99999:
+    if time not in range(1, 9999):
         form['time'] = 250
         warnings.warn("time out of boundary")
     else:

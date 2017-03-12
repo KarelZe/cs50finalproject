@@ -16,31 +16,32 @@ Search
          <div class="mdl-cell mdl-cell--6-col">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                <input class="mdl-textfield__input" type="float" pattern="-?[0-9]*(\.[0-9]+)?"
-                      name="confidence" id="confidence">
+                      name="confidence" id="confidence" required>
                <label class="mdl-textfield__label" for="confidence">confidence...</label>
-               <span class="mdl-textfield__error">Number required!</span>
+               <span class="mdl-textfield__error">Number e.g. 0.95 required!</span>
             </div>
          </div>
          <div class="mdl-cell mdl-cell--5-col">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?"
-                      name="time" id="time">
+                      name="time" id="time" required>
                <label class="mdl-textfield__label" for="time">time...</label>
-               <span class="mdl-textfield__error">Integer required!</span>
+               <span class="mdl-textfield__error">Integer e.g. 250 required!</span>
             </div>
          </div>
          <div class="mdl-cell mdl-cell--6-col">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-               <input class="mdl-textfield__input" type="text" name="symbol" id="symbol">
+               <input class="mdl-textfield__input" type="text" name="symbol" id="symbol" required>
                <label class="mdl-textfield__label" for="symbol">ticker...</label>
+               <span class="mdl-textfield__error">Symbol e.g. GOOGL required!</span>
             </div>
          </div>
          <div class="mdl-cell mdl-cell--5-col">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                <input class="mdl-textfield__input" type="float" pattern="-?[0-9]*(\.[0-9]+)?"
-                      name="percentage" id="percentage">
+                      name="percentage" id="percentage" required>
                <label class="mdl-textfield__label" for="percentage">percentage...</label>
-                <span class="mdl-textfield__error">Number required!</span>
+                <span class="mdl-textfield__error">Number e.g. 0.5 required!</span>
             </div>
          </div>
          <div class="mdl-cell mdl-cell--1-col">

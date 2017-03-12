@@ -114,9 +114,7 @@ def search():
             return helpers.apology("(≥o≤)", "No valid symbols")
         else: # Todo: send calculation data to html
             form = calculate_historical_var(form)
-            json_data = var_to_json(form['initial_capital'],
-                                    form['future_value'],
-                                    form['time'])
+            json_data = var_to_json(form['initial_capital'], form['future_value'],form['time'])
             return render_template('result.html', json_data=json_data)
     else:
         return render_template('search.html')
