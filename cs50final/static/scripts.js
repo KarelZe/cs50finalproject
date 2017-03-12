@@ -84,3 +84,48 @@ function add_fields() {
 function remove_fields(rid) {
     $(".removal_code"+rid).remove();
 }
+
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart(){
+        data_raw = $('#chart_div').data("name");
+        json_data = data_raw;
+        var data = new google.visualization.DataTable();
+        data.addColumn('string','date');
+        data.addColumn('number','data');
+
+        data.addRows(json_data);
+
+        console.log(data)
+        var options = {
+          animation:
+          {
+            duration: 1000,
+            easing : 'out',
+            startup: true,
+          },
+
+          hAxis: {
+
+            gridlines: {color: 'none'},
+            baselineColor: 'none',
+          },
+          vAxis: {
+            minValue: 0,
+            gridlines: {color: 'none'},
+            baselineColor: 'none',
+          },
+          legend: {position: 'none'},
+          areaOpacity: 0,
+          colors: ['#F44235'],
+
+          chartArea: {
+            left:0,top:0,width:'100%',height:'100%',
+          },
+          theme: 'maximized'
+        }
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+}

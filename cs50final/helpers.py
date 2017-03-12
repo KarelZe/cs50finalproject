@@ -1,6 +1,11 @@
 import warnings
 
 import quandl
+from flask import render_template
+
+
+def apology(top="", bottom=""):
+    return render_template("apology.html", top=top, bottom=bottom)
 
 
 def validate_form(form):
@@ -37,23 +42,27 @@ def validate_percentage(form):
             valid_percentage = False
             break
 
-    # given input is incorrect, initialize list with length of ticker list and weight equally
-    if not (valid_percentage is True and sum(form['percentage']) == 1.0) and len_symbol == len_percentage:
+    # given input is incorrect, initialize list
+    # with length of ticker list and weight equally
+    if not (valid_percentage is True and
+            sum(form['percentage']) == 1.0) and \
+            len_symbol == len_percentage:
         form['percentage'] = [1] * len_symbol
-        form['percentage'][:] = [1.0 / len_symbol for x in range(len_percentage)]
+        form['percentage'][:] = \
+            [1.0 / len_symbol for _ in range(len_percentage)]
     return form
 
 
 def validate_symbol(form):
-    # todo try alternative approach https://github.com/quandl/quandl-python/blob/master/FOR_DEVELOPERS.md
     validated_symbol = []
     # loop through given symbols return validated list of symbols
     for i in range(len(form['symbol'])):
         try:
-            data = quandl.get("WIKI/" + form['symbol'][i], rows=1, column_index=0)
+            data = quandl.get("WIKI/" + form['symbol'][i],
+                              rows=1, column_index=0)
             if data is not None:
                 validated_symbol.append("WIKI/" + form['symbol'][i])
-        except:
+        except ValueError:
             warnings.warn('error during validation')
     form['symbol'] = validated_symbol
     return form
