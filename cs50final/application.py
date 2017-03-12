@@ -46,33 +46,30 @@ def calculate_historical_var(form):
      otherwise NULL"""
     form['initial_capital'] = 100000
 
-    try:
-        df = quandl.get(form['symbol'], start_date=str(datetime.now() - relativedelta(years=2)),
-                        end_date=str(datetime.now), collapse="weekly",
-                        transform="rdiff", returns="pandas")
+    df = quandl.get(form['symbol'], start_date=str(datetime.now() - relativedelta(years=2)),
+                    end_date=str(datetime.now), collapse="weekly",
+                    transform="rdiff", returns="pandas")
 
-        # slice data frame to relevant close quotes
-        df_portfolio = df.ix[::, 10::12]
+    # slice data frame to relevant close quotes
+    df_portfolio = df.ix[::, 10::12]
 
-        # Transform percent matrix for multiplication
-        df_multiplier = pd.DataFrame(form['percentage']).transpose()
-        df_multiplier *= form['initial_capital']
+    # Transform percent matrix for multiplication
+    df_multiplier = pd.DataFrame(form['percentage']).transpose()
+    df_multiplier *= form['initial_capital']
 
-        # multiply daily return in % with the total initial capital * percentage
-        df_product = pd.DataFrame(df_multiplier.values * df_portfolio.values,
-                                  columns=df_portfolio.columns,
-                                  index=df_portfolio.index)
+    # multiply daily return in % with the total initial capital * percentage
+    df_product = pd.DataFrame(df_multiplier.values * df_portfolio.values,
+                              columns=df_portfolio.columns,
+                              index=df_portfolio.index)
 
-        # sum up daily return, calculate standard deviation
-        df_product['sum_portfolio'] = df_product.sum(axis=1)
-        std = df_product["sum_portfolio"].std()
+    # sum up daily return, calculate standard deviation
+    df_product['sum_portfolio'] = df_product.sum(axis=1)
+    std = df_product["sum_portfolio"].std()
 
-        # value at risk scaled to horizon = value at risk * square root time
-        value_at_risk = ndtri(1 - form['confidence']) * std * sqrt(form['time'])
-        form['future_value'] = max(form['initial_capital'] + value_at_risk, 0)
-        return form
-    except ValueError:
-        return None
+    # value at risk scaled to horizon = value at risk * square root time
+    value_at_risk = ndtri(1 - form['confidence']) * std * sqrt(form['time'])
+    form['future_value'] = max(form['initial_capital'] + value_at_risk, 0)
+    return form
 
 
 def var_to_json(initial_value, future_value, time):
@@ -110,6 +107,7 @@ def search():
         form = request.form.to_dict(flat=False)
         form = helpers.validate_form(form)
 
+        # see helpers.py for validation
         if not form['symbol']:
             return helpers.apology("(≥o≤)", "no valid symbols.")
         elif form['time'] == -1:
@@ -119,7 +117,7 @@ def search():
         elif form['confidence'] == 0.5:
             return helpers.apology("\(^Д^)/", "shortcut. 100k.")
 
-        else:  # Todo: send calculation data to html
+        else:
             form = calculate_historical_var(form)
             json_data = var_to_json(form['initial_capital'], form['future_value'], form['time'])
             return render_template('result.html', json_data=json_data, calc_data=form)
