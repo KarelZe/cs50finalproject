@@ -31,7 +31,7 @@ def validate_form(form):
         time = -1
 
     # If time out of bounds, error page will be returned.
-    if time not in range(1, 9999):
+    if time not in range(1, 2500):
         form['time'] = -1
         warnings.warn("time out of boundary")
     else:
@@ -94,5 +94,5 @@ def validate_symbol(form):
                 validated_symbol.append("WIKI/" + form['symbol'][i])
         except:
             warnings.warn('error during validation')
-        form['symbol'] = validated_symbol
-        return form
+    form['symbol'] = validated_symbol
+    return form

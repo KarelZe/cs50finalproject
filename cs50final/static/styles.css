@@ -3,6 +3,8 @@ a {
   text-decoration: inherit; /* no underline */
 }
 
+
+
 .own-header{
 background-color: rgb(36, 41, 46);
 height: 64px;
@@ -62,8 +64,12 @@ color: #FFFFFF;
   font-size: 13px;
 }
 
-.own-content-error {
+#own-content-error {
     text-align: center;
-.own-content-error h1 {
+
+#own-content-error p {
+    text-align: center;
+}
+#own-content-error h1 {
     font-size: 500%;
 }
